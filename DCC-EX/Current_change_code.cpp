@@ -1,6 +1,7 @@
 /*
 EXAMPLES:
 sprintf(c,"a %d %d %d",data.address,data.subAddress,data.tStatus);
+printf("Hi %c %d %s", 'c', 10, "there!");
 CommManager::printf("<H %d %d>", data.id, data.tStatus);
 CommManager::printf("<H %d %d %d %d>", tt->data.id, tt->data.address, tt->data.subAddress, tt->data.tStatus);
 CommManager::printf("<p1 %s>", name);
@@ -40,8 +41,8 @@ private:
     } else {
         for(int i = 0; i < MAX_MOTOR_BOARDS; i++) {
 	  if(boards[i] != NULL && strcasecmp(boards[i]->getName(), com+2) == 0) {
+            // fnd - must change the below line
 	    CommManager::printf("<a %s %d>", boards[i]->getName(), boards[i]->getLastRead());
-		// CommManager::printf("a %s %s>, boards[]i]->getName(), board[i]->getLastRead()); fnd change this?
 	    return;
 	  }
           CommManager::printf("<X>");
@@ -49,15 +50,18 @@ private:
      break;
 	 
 // **** CurrentMonitor.cpp ****
-int MotorBoard::getLastRead() {
+int MotorBoard::getLastRead() {  \
+// ****** Why is this a function? Is it scope? So we can call it from serialcommand.cpp?
+// or is it just factoring because it is called several times?
 // NEWCURRENT
 // Maintaining compatibility with JMRI for now so must return "reading" which is the raw pin value from
 // the current sense pin. When we issue a PR for JMRI, we can change it to the line below.
-//	return reading, current, triggerMilliamps, maxMilliAmps  
+//	return reading, current, triggerMilliamps, maxMilliAmps
 	return reading;
 }
 
-//Change the above function to something like this?
+//Change the above function to something like this? But C can't return multiple values. Would need pointers or
+// to parse a string
 const char MotorBoard::getLastRead() {
 	return ("%d %d %d %d"), reading, current, triggerMilliamps, maxMilliamps);
 }
